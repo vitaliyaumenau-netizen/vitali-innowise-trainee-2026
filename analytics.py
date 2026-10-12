@@ -2,7 +2,7 @@ from database import Database
 
 
 class StudentRoomAnalytics:
-    """Содержит методы аналитики."""
+    """Contains analytics methods."""
 
     def __init__(self, db: Database) -> None:
         self.db = db

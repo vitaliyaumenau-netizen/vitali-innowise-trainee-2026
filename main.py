@@ -6,12 +6,12 @@ from analytics import StudentRoomAnalytics
 from exporters import ExporterFactory
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Аналитика студентов и комнат")
-    parser.add_argument("--students", required=True, help="Путь к файлу студентов (students.json)")
-    parser.add_argument("--rooms", required=True, help="Путь к файлу комнат (rooms.json)")
-    parser.add_argument("--format", choices=["json", "xml"], required=True, help="Формат выгрузки: json или xml")
+    parser = argparse.ArgumentParser(description="Students and Rooms Analytics")
+    parser.add_argument("--students", required=True, help="Path to the students file (students.json)")
+    parser.add_argument("--rooms", required=True, help="Path to the rooms file (rooms.json)")
+    parser.add_argument("--format", choices=["json", "xml"], required=True, help="Export format: json or xml")
 
-    # Параметры БД
+    # DB Parameters
     parser.add_argument("--db-name", default="postgres")
     parser.add_argument("--db-user", default="admin")
     parser.add_argument("--db-password", default="admin123")
@@ -32,12 +32,12 @@ def main():
     )
 
     try:
-        # 1. Загрузка данных
+        # 1. Load data
         loader = DataLoader(db)
         loader.load_rooms(args.rooms)
         loader.load_students(args.students)
 
-        # 2. Выполнение аналитических запросов
+        # 2. Run analytical queries
         analytics = StudentRoomAnalytics(db)
         queries_to_run = {
             "rooms_with_students_count": analytics.get_rooms_with_students_count,
@@ -46,7 +46,7 @@ def main():
             "rooms_with_mixed_genders": analytics.get_rooms_with_mixed_genders,
         }
 
-        # 3. Экспорт результатов с помощью выбранного формата
+        # 3. Export results using the selected format
         exporter = ExporterFactory.get_exporter(args.format)
         os.makedirs("result_data", exist_ok=True)
 
@@ -54,7 +54,7 @@ def main():
             data, columns = query_func()
             output_file = f"result_data/{name}.{args.format}"
             exporter.export(data, columns, output_file)
-            print(f"[Успех] Результат сохранён в {output_file}")
+            print(f"[Success] Result saved to {output_file}")
 
     finally:
         db.close()

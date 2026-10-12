@@ -4,8 +4,8 @@ from database import Database
 
 
 class DataLoader:
-    """Загружает исходные JSON-файлы с комнатами и студентами в БД."""
-    
+    """Loads source JSON files with rooms and students into the database."""
+
     def __init__(self, db: Database):
         self.db = db
 

@@ -4,7 +4,7 @@ import psycopg2
 import psycopg2.extras
 
 class Database:
-    """Отвечает только за подключение к PostgreSQL и выполнение SQL-запросов."""
+    """Responsible only for connecting to PostgreSQL and executing SQL queries."""
 
     def __init__(self, db_name: str, user: str, password: str, host: str, port: str):
         self._conn_params = {
@@ -22,7 +22,7 @@ class Database:
 
 
     def execute_query(self, query: str, params: tuple | None = None) -> tuple:
-        """Выполняет SELECT запрос и возвращает (данные, названия_колонок)."""
+        """Executes a SELECT query and returns (data, column_names)."""
         self.connect()
         with self._conn.cursor() as cursor:
             cursor.execute(query, params or ())
@@ -31,7 +31,7 @@ class Database:
             return result, columns
 
     def execute_batch_insert(self, query: str, data: list[dict[str, Any]]) -> None:
-        """Выполняет массовую вставку записей."""
+        """Performs a batch insert of records."""
         self.connect()
         with self._conn.cursor() as cursor:
             psycopg2.extras.execute_batch(cursor, query, data)

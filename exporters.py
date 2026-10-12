@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ElementTree
 
 
 class DataExporter(ABC):
-    """Абстрактный класс (стратегия) для экспортёров данных."""
+    """Abstract class (strategy) for data exporters."""
 
     @abstractmethod
     def export(self, data: list, columns: list, out_path: str) -> None:
@@ -13,7 +13,7 @@ class DataExporter(ABC):
 
 
 class JsonExporter(DataExporter):
-    """Экспорт результатов в формате JSON."""
+    """Exports results in JSON format."""
 
     def export(self, data: list, columns: list, out_path: str) -> None:
         records = [dict(zip(columns, row)) for row in data]
@@ -22,7 +22,7 @@ class JsonExporter(DataExporter):
 
 
 class XmlExporter(DataExporter):
-    """Экспорт результатов в формате XML."""
+    """Exports results in XML format."""
 
     def export(self, data: list, columns: list, out_path: str) -> None:
         root = ElementTree.Element("results")
@@ -37,7 +37,7 @@ class XmlExporter(DataExporter):
 
 
 class ExporterFactory:
-    """Фабрика для создания экспортера по названию формата."""
+    """Factory for creating an exporter based on the format name."""
 
     @staticmethod
     def get_exporter(fmt: str) -> DataExporter:
@@ -47,4 +47,4 @@ class ExporterFactory:
         elif fmt == "xml":
             return XmlExporter()
         else:
-            raise ValueError(f"Неподдерживаемый формат выгрузки: {fmt}")
+            raise ValueError(f"Unsupported export format: {fmt}")
