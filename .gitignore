@@ -1,3 +1,4 @@
-/result_data
-/.idea
-/__pycache__
+result_data/
+.idea/
+__pycache__/
+.venv/
