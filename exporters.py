@@ -1,7 +1,7 @@
 import json
 from abc import ABC, abstractmethod
 import xml.etree.ElementTree as ElementTree
-
+from typing import ClassVar
 
 
 class DataExporter(ABC):
@@ -39,12 +39,22 @@ class XmlExporter(DataExporter):
 class ExporterFactory:
     """Factory for creating an exporter based on the format name."""
 
-    @staticmethod
-    def get_exporter(fmt: str) -> DataExporter:
+    _exporters: ClassVar[dict[str, type[DataExporter]]] = {
+        "json": JsonExporter,
+        "xml": XmlExporter
+    }
+
+    @classmethod
+    def get_exporter(cls, fmt: str) -> DataExporter:
         fmt = fmt.lower()
-        if fmt == "json":
-            return JsonExporter()
-        elif fmt == "xml":
-            return XmlExporter()
-        else:
+        exporter_class = cls._exporters.get(fmt)
+
+        if not exporter_class:
             raise ValueError(f"Unsupported export format: {fmt}")
+
+        return exporter_class()
+
+    @classmethod
+    def register_exporter(cls, fmt: str, exporter_class: type[DataExporter]):
+        """Метод для динамического добавления новых форматов (расширения)."""
+        cls._exporters[fmt.lower()] = exporter_class

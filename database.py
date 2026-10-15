@@ -2,6 +2,7 @@ from typing import Any
 
 import psycopg2
 import psycopg2.extras
+import logging
 
 class Database:
     """Responsible only for connecting to PostgreSQL and executing SQL queries."""
@@ -20,6 +21,9 @@ class Database:
         if not self._conn or self._conn.closed:
             self._conn = psycopg2.connect(**self._conn_params)
 
+    def close(self) -> None:
+        if self._conn and not self._conn.closed:
+            self._conn.close()
 
     def execute_query(self, query: str, params: tuple | None = None) -> tuple:
         """Executes a SELECT query and returns (data, column_names)."""
@@ -37,6 +41,14 @@ class Database:
             psycopg2.extras.execute_batch(cursor, query, data)
             self._conn.commit()
 
-    def close(self) -> None:
-        if self._conn and not self._conn.closed:
-            self._conn.close()
+    def execute_create_request(self, query: str) -> None:
+        """Executes a CREATE requests"""
+        self.connect()
+        try:
+            with self._conn.cursor() as cursor:
+                cursor.execute(query)
+                self._conn.commit()
+        except psycopg2.Error as err:
+            logging.warning(err)
+            self._conn.rollback()
+

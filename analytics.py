@@ -1,11 +1,11 @@
-from database import Database
+from interfaces import QueryExecutor
 
 
 class StudentRoomAnalytics:
     """Contains analytics methods."""
 
-    def __init__(self, db: Database) -> None:
-        self.db = db
+    def __init__(self, executor: QueryExecutor) -> None:
+        self.executor = executor
 
     def get_rooms_with_students_count(self) -> tuple:
         query = """
@@ -17,7 +17,7 @@ class StudentRoomAnalytics:
             GROUP BY r.id, r.name
             ORDER BY r.name;
         """
-        return self.db.execute_query(query)
+        return self.executor.execute_query(query)
 
     def get_top5_smallest_avg_age(self) -> tuple:
         query = """
@@ -31,7 +31,7 @@ class StudentRoomAnalytics:
             ORDER BY avg_age_years ASC
             LIMIT 5;
         """
-        return self.db.execute_query(query)
+        return self.executor.execute_query(query)
 
     def get_top5_largest_age_difference(self) -> tuple:
         query = """
@@ -50,7 +50,7 @@ class StudentRoomAnalytics:
             ORDER BY AGE(MAX(s.birthday), MIN(s.birthday)) DESC
             LIMIT 5;
         """
-        return self.db.execute_query(query)
+        return self.executor.execute_query(query)
 
     def get_rooms_with_mixed_genders(self) -> tuple:
         query = """
@@ -61,4 +61,4 @@ class StudentRoomAnalytics:
             GROUP BY r.id, r.name
             HAVING COUNT(DISTINCT s.sex) > 1;
         """
-        return self.db.execute_query(query)
+        return self.executor.execute_query(query)
