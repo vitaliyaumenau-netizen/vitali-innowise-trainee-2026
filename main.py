@@ -1,15 +1,11 @@
 import argparse
 import os
-from os import read
-
 from create_database_request import CreateDatabaseRequest
 from database import Database
 from data_loader import DataLoader
 from analytics import StudentRoomAnalytics
 from exporters import ExporterFactory
 from dotenv import load_dotenv
-
-from interfaces import CreateTable
 
 load_dotenv()
 
