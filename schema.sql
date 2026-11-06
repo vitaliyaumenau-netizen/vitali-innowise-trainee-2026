@@ -1,4 +1,9 @@
-CREATE TYPE gender_enum AS ENUM ('M', 'F');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'gender_enum') THEN
+        CREATE TYPE gender_enum AS ENUM ('M', 'F');
+    END IF;
+END $$;
 
 
 CREATE TABLE IF NOT EXISTS public.Rooms (

@@ -23,7 +23,7 @@ class StudentRoomAnalytics:
         query = """
             SELECT 
                 r.name AS room_name,
-                EXTRACT(YEAR FROM AVG(AGE(CURRENT_DATE, s.birthday)))::FLOAT AS avg_age_years
+                (AVG(CURRENT_DATE - s.birthday::date) / 365.25)::FLOAT AS avg_age_years
             FROM rooms r
             JOIN students s ON r.id = s.room
             WHERE s.birthday IS NOT NULL

@@ -1,6 +1,6 @@
 import argparse
 import os
-from create_database_request import CreateDatabaseRequest
+from schema_initializer import SchemaInitializer
 from database import Database
 from data_loader import DataLoader
 from analytics import StudentRoomAnalytics
@@ -37,11 +37,9 @@ def main():
     )
 
     try:
-        # 1. Create data
-        creator = CreateDatabaseRequest(creator=db)
-        with open("schema.sql", "r", encoding="utf-8") as sql_file:
-            sql_query = sql_file.read()
-            creator.execute_create_request(sql_query)
+        # 1. Initialize DB schema from file
+        initializer = SchemaInitializer(creator=db)
+        initializer.init_schema("schema.sql")
 
         # 2. Load data
         loader = DataLoader(inserter=db)
