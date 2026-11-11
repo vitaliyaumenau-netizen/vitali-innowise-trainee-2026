@@ -1,3 +1,4 @@
+# main file
 import argparse
 import os
 from schema_initializer import SchemaInitializer
